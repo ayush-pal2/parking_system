@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Park Vehicle</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .checkbox-item:hover {
+            background: #edf2f7;
+            border-color: #667eea;
+        }
+
+        .checkbox-item.selected {
+            background: #e6f2ff;
+            border-color: #667eea;
+        }
+
+        input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        .checkbox-content {
+            flex: 1;
+        }
+
+        .checkbox-title {
+            font-size: 1.1em;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .checkbox-description {
+            font-size: 0.9em;
+            color: #718096;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e0;
+        }
+
+        .info-box {
+            background: #e6fffa;
+            border-left: 4px solid #38b2ac;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        .info-box p {
+            color: #234e52;
+            margin: 0;
+        }
+
+        .messages {
+            margin-bottom: 20px;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .alert-error {
+            background: #fed7d7;
+            color: #c53030;
+            border: 1px solid #fc8181;
+        }
+
+        .alert-success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>🚗 Park Vehicle</h1>
+        <p class="subtitle">Find the best available parking slot</p>
+
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="info-box">
+            <p>💡 The system will automatically allocate the nearest available slot that matches your requirements.</p>
+        </div>
+
+        <form method="POST" id="parkingForm">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <label>Vehicle Requirements</label>
+                <div class="checkbox-group">
+                    <label class="checkbox-item" id="coverItem">
+                        <input type="checkbox" id="needsCover" name="needsCover">
+                        <div class="checkbox-content">
+                            <div class="checkbox-title">🏠 Covered Parking</div>
+                            <div class="checkbox-description">Protect your vehicle from weather</div>
+                        </div>
+                    </label>
+                    
+                    <label class="checkbox-item" id="evItem">
+                        <input type="checkbox" id="needsEV" name="needsEV">
+                        <div class="checkbox-content">
+                            <div class="checkbox-title">⚡ EV Charging</div>
+                            <div class="checkbox-description">Electric vehicle charging station</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="btn btn-success">Find & Park</button>
+                <a href="{% url 'index' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Add visual feedback for checkbox selection
+        const coverCheckbox = document.getElementById('needsCover');
+        const evCheckbox = document.getElementById('needsEV');
+        const coverItem = document.getElementById('coverItem');
+        const evItem = document.getElementById('evItem');
+
+        coverCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                coverItem.classList.add('selected');
+            } else {
+                coverItem.classList.remove('selected');
+            }
+        });
+
+        evCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                evItem.classList.add('selected');
+            } else {
+                evItem.classList.remove('selected');
+            }
+        });
+    </script>
+</body>
+</html>

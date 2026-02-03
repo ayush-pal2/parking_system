@@ -4,7 +4,6 @@ from .models import ParkingSlot
 from django.http import JsonResponse
 
 def index(request):
-    """Main dashboard view"""
     slots = ParkingSlot.objects.all()
     total_slots = slots.count()
     occupied_slots = slots.filter(isOccupied=True).count()
@@ -19,7 +18,6 @@ def index(request):
     return render(request, 'parking/index.html', context)
 
 def add_slot(request):
-    """Add a new parking slot"""
     if request.method == 'POST':
         slot_no = request.POST.get('slotNo')
         is_covered = request.POST.get('isCovered') == 'on'
@@ -45,7 +43,6 @@ def add_slot(request):
     return render(request, 'parking/add_slot.html')
 
 def park_vehicle(request):
-    """Park a vehicle in the nearest available slot"""
     if request.method == 'POST':
         needs_ev = request.POST.get('needsEV') == 'on'
         needs_cover = request.POST.get('needsCover') == 'on'
@@ -62,7 +59,6 @@ def park_vehicle(request):
     return render(request, 'parking/park_vehicle.html')
 
 def remove_vehicle(request, slot_id):
-    """Remove a vehicle from a parking slot"""
     slot = get_object_or_404(ParkingSlot, id=slot_id)
     
     if slot.isOccupied:
@@ -75,7 +71,6 @@ def remove_vehicle(request, slot_id):
     return redirect('index')
 
 def delete_slot(request, slot_id):
-    """Delete a parking slot"""
     slot = get_object_or_404(ParkingSlot, id=slot_id)
     slot_no = slot.slotNo
     slot.delete()

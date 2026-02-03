@@ -14,11 +14,7 @@ class ParkingSlot(models.Model):
     
     @staticmethod
     def park_vehicle(needs_ev, needs_cover):
-        """
-        Allocate the nearest available matching slot.
-        Returns the allocated slot or None if no slot is available.
-        """
-        # Filter available slots that match requirements
+        
         available_slots = ParkingSlot.objects.filter(isOccupied=False)
         
         if needs_ev:
@@ -27,7 +23,6 @@ class ParkingSlot(models.Model):
         if needs_cover:
             available_slots = available_slots.filter(isCovered=True)
         
-        # Get the nearest (lowest slot number) available slot
         slot = available_slots.order_by('slotNo').first()
         
         if slot:
